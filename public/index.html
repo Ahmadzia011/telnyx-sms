@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SMS Console</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">SMS Console</div>
+    <div class="topbar-right">
+      <span id="connStatus" class="conn" hidden>Connection lost, retrying</span>
+      <span id="myNumber" class="mynumber"></span>
+      <button id="signOut" class="btn-signout" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-tools">
+        <div class="search">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="search" type="search" placeholder="Search by number" autocomplete="off">
+        </div>
+        <button id="newBtn" class="btn-new" type="button" title="New conversation">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+          <span>New</span>
+        </button>
+      </div>
+      <ul id="convList" class="conv-list"></ul>
+      <div id="convEmpty" class="side-empty" hidden>No conversations yet. Select New to text a number.</div>
+    </aside>
+
+    <main class="chat">
+      <div id="placeholder" class="placeholder">Select a conversation or start a new one.</div>
+
+      <div id="chatView" class="chat-view" hidden>
+        <div class="chat-head" id="chatHead"></div>
+        <div id="thread" class="thread"></div>
+        <div class="composer">
+          <div id="banner" class="banner" role="alert" hidden></div>
+          <div class="composer-row">
+            <textarea id="input" rows="1" placeholder="Type a message" aria-label="Message"></textarea>
+            <button id="sendBtn" class="btn-send" type="button" title="Send">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 11.5L21 3l-6.5 18-3.2-7.3L3 11.5z" fill="currentColor"/></svg>
+              <span>Send</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <dialog id="newDialog" class="dialog">
+    <div class="dialog-title">New conversation</div>
+    <label for="newNumber" class="dialog-label">US phone number</label>
+    <input id="newNumber" type="tel" placeholder="(207) 337-4818" autocomplete="off">
+    <div id="newError" class="dialog-error" hidden></div>
+    <div class="dialog-actions">
+      <button id="newCancel" class="btn-flat" type="button">Cancel</button>
+      <button id="newStart" class="btn-primary" type="button">Start</button>
+    </div>
+  </dialog>
+
+  <script src="/app.js"></script>
+</body>
+</html>

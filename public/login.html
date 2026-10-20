@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in - SMS Console</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar"><div class="brand">SMS Console</div></header>
+  <main class="login-wrap">
+    <div class="login-box">
+      <div class="dialog-title">Sign in</div>
+      <label for="password" class="dialog-label">Password</label>
+      <input id="password" type="password" autocomplete="current-password" autofocus>
+      <div id="loginError" class="dialog-error" hidden></div>
+      <div class="dialog-actions">
+        <button id="loginBtn" class="btn-primary" type="button">Sign in</button>
+      </div>
+    </div>
+  </main>
+  <script src="/login.js"></script>
+</body>
+</html>
