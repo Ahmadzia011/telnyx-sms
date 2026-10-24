@@ -1,6 +1,6 @@
 const { requireAuth } = require('../lib/auth');
 const { getSql } = require('../lib/db');
-const { normalizeUS } = require('../lib/phone');
+const { normalizeContact } = require('../lib/phone');
 
 module.exports = async (req, res) => {
   if (!requireAuth(req, res)) return;
@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
   const body = req.body && typeof req.body === 'object' ? req.body : {};
-  const norm = normalizeUS(body.contact);
+  const norm = normalizeContact(body.contact);
   if (!norm.ok) return res.status(400).json({ ok: false, error: norm.error });
 
   try {

@@ -1,6 +1,6 @@
 const { requireAuth } = require('../lib/auth');
 const { getSql } = require('../lib/db');
-const { normalizeUS } = require('../lib/phone');
+const { normalizeContact } = require('../lib/phone');
 
 module.exports = async (req, res) => {
   if (!requireAuth(req, res)) return;
@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
   }
   res.setHeader('Cache-Control', 'no-store');
 
-  const norm = normalizeUS(req.query.contact);
+  const norm = normalizeContact(req.query.contact);
   if (!norm.ok) return res.status(400).json({ ok: false, error: norm.error });
 
   try {

@@ -78,8 +78,12 @@
     if (state.draft && !list.some((c) => c.contact === state.draft)) {
       list.unshift({ contact: state.draft, last_body: '', last_at: null, unread: 0, last_direction: 'out', isDraft: true });
     }
-    const q = state.filter.replace(/\D/g, '');
-    return q ? list.filter((c) => c.contact.replace(/\D/g, '').includes(q)) : list;
+    const q = state.filter.trim().toLowerCase();
+    const qd = q.replace(/\D/g, '');
+    if (!q) return list;
+    return list.filter(
+      (c) => (qd && c.contact.replace(/\D/g, '').includes(qd)) || c.contact.toLowerCase().includes(q)
+    );
   }
 
   function renderSidebar() {
@@ -195,17 +199,22 @@
   }
 
   async function poll() {
-    try {
-      await refreshThread();      // first, so reading clears unread before the sidebar loads
-      await refreshConversations();
-      $('connStatus').hidden = true;
-    } catch (e) {
-      console.error(e);
-      $('connStatus').hidden = false;
-    }
+    let failed = false;
+    try { await refreshThread(); } catch (e) { console.error(e); failed = true; } // first, so reading clears unread
+    try { await refreshConversations(); } catch (e) { console.error(e); failed = true; }
+    $('connStatus').hidden = !failed;
   }
 
   // ---------- actions ----------
+
+  const isReplyable = (contact) => /^\+1\d{10}$/.test(contact || '');
+
+  function applyComposerState() {
+    const ok = isReplyable(state.selected);
+    $('input').disabled = !ok;
+    $('sendBtn').disabled = !ok;
+    $('input').placeholder = ok ? 'Type a message' : 'This sender is a short code or non-US number. Replies are not supported here.';
+  }
 
   async function openConversation(contact) {
     state.selected = contact;
@@ -217,17 +226,18 @@
     $('placeholder').hidden = true;
     $('chatView').hidden = false;
     $('chatHead').textContent = formatNumber(contact);
+    applyComposerState();
     renderThread();
     renderSidebar();
 
     try { await refreshThread(); await refreshConversations(); } catch (e) { setBanner(e.message); }
-    $('input').focus();
+    if (isReplyable(contact)) $('input').focus();
   }
 
   async function send() {
     const input = $('input');
     const text = input.value.trim();
-    if (!text || !state.selected || state.sending) return;
+    if (!text || !isReplyable(state.selected) || state.sending) return;
 
     state.sending = true;
     $('sendBtn').disabled = true;
@@ -244,7 +254,7 @@
       setBanner(e.message); // the real error from Telnyx, or from validation
     } finally {
       state.sending = false;
-      $('sendBtn').disabled = false;
+      applyComposerState();
     }
     state.forceScroll = true;
     try { await refreshThread(); await refreshConversations(); } catch (e) { console.error(e); }
